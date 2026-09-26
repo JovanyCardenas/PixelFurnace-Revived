@@ -2,6 +2,34 @@
 
 A modern, open-source recreation of **PixelFurnace**, the software originally used to customize the LED display on the Gameband Minecraft bracelet.
 
+## Download
+
+### Windows
+
+The easiest way to use PixelFurnace Studio is to download the prebuilt Windows application from the [Releases](../../releases) page.
+
+Download:
+
+**`PixelFurnaceStudio.exe`**
+
+No Python installation is required for the standalone Windows build.
+
+> Windows may display a reputation warning because the application is currently unsigned. PixelFurnace Studio is open source, and the source used to build the executable is available in this repository.
+
+### Run From Source
+
+Developers can also clone the repository and run PixelFurnace Studio directly with Python.
+
+Requirements:
+
+- Python 3
+- `hidapi`
+- `Pillow`
+
+```bash
+pip install -r requirements.txt
+python PixelFurnaceStudio.py
+
 ## About This Project
 
 The original Gameband software and PixelFurnace editor are no longer reliably available or functional on modern systems. After trying to find a working copy that could still communicate with my Gameband, I decided to recreate the functionality myself.
