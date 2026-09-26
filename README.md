@@ -29,6 +29,7 @@ Requirements:
 ```bash
 pip install -r requirements.txt
 python PixelFurnaceStudio.py
+```
 
 ## About This Project
 
