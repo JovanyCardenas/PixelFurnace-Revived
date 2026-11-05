@@ -1,62 +1,103 @@
-PIXELFURNACE STUDIO 1.3 — BRANDED WINDOWS EDITION
-==================================================
+PIXELFURNACE STUDIO v1.1 — CLOCK & DST BUG FIXES
+================================================
 
-This release integrates the supplied Gameband visual resources.
+PixelFurnace Studio is an independent, community-made recreation of the
+original PixelFurnace editor for the Gameband Minecraft bracelet. It connects
+to original Gameband hardware to customize its 20x7 LED display without
+requiring the discontinued Gameband cloud service.
 
-BRANDING
-- background.png is used as the actual application wallpaper.
-- icon.icns is retained for a future macOS build.
-- icon.png is used as the live Tk application/window icon.
-- PixelFurnaceStudio.ico is generated from the supplied ICNS and is used for
-  the Windows EXE icon.
+WHAT'S NEW IN v1.1
+------------------
+- Improved detection of upcoming daylight-saving-time (DST) changes using
+  local timezone offsets evaluated at future timestamps.
+- Fixed the display of negative fractional-hour UTC offsets (for example,
+  UTC-3:30).
+- Fixed clock synchronization dialogs that displayed literal \n characters
+  instead of line breaks.
+- Clock synchronization now preserves configuration header word 6 rather
+  than overwriting it. Other Gameband implementations identify this field
+  as display orientation; its exact behavior still needs hardware testing.
+- Clears stored transition timestamp fields when no upcoming timezone
+  transition is found.
+
+These fixes are implemented in the v1.1 source branch but have not yet been
+fully validated on physical Gameband hardware. Test clock and display
+behavior carefully before relying on them.
 
 FEATURES
-- Read Gameband over HID
-- Sync date/time + timezone/DST
-- Built-in Time and Date screens
-- Scrolling text generation
-- Custom 20x7 pixel-scroll drawing
-- Add / delete / reorder text-pixel screens
-- Scroll preview
-- Save candidate
-- Automatic backups
-- Restore backup
-- Guarded verified hardware writes
-- Simple mode by default
-- Advanced mode for screen management / recovery
-- Animation creation remains intentionally removed
+--------
+- Read Gameband configuration over USB HID
+- Synchronize date, time, timezone, and DST information
+- Support built-in Time and Date screens
+- Generate scrolling text
+- Draw custom 20x7 pixel-scroll artwork
+- Add, delete, and reorder text/pixel screens
+- Preview scrolling messages
+- Save configuration candidates to a .bin file
+- Create automatic configuration backups
+- Restore valid backups
+- Apply configuration changes with readback and verification safeguards
+- Use Simple Mode by default
+- Use Advanced Mode for screen management, timing controls, and diagnostics
+- Animation creation remains intentionally unsupported
+
+BRANDING AND INCLUDED RESOURCES
+-------------------------------
+- background.png provides the application's wallpaper.
+- icon.png provides the Tk application/window icon.
+- PixelFurnaceStudio.ico provides the Windows executable icon.
+- icon.icns is retained for a possible future macOS build.
 
 RUN FROM SOURCE
+---------------
 Double-click:
   Launch from Source.bat
 
+Alternatively, install the Python dependencies listed in requirements.txt
+and run:
+  python PixelFurnaceStudio.py
+
 BUILD THE WINDOWS EXE
+---------------------
 Double-click:
   Build Windows EXE.bat
 
-The finished standalone application will be:
+The build script is intended to produce:
   PixelFurnace Studio Windows\PixelFurnaceStudio.exe
 
-The EXE bundles the Python runtime, HID support, Pillow, background artwork,
-and application icon, so the end user does not need Python installed.
+The standalone Windows executable bundles the Python runtime and required
+application resources, so end users do not need Python installed.
 
-MACOS LATER
-The included icon.icns is already an Apple icon container. A macOS .app still
-needs to be built on macOS and Gameband HID access should be tested there
-before calling the Mac build supported.
+If downloading a prebuilt executable from GitHub Releases, use the file
+provided with the release instead of building from source.
+
+BACKUPS AND HARDWARE SAFETY
+---------------------------
+The application creates backups when reading the Gameband and before
+configuration writes. Keep copies of your original backups somewhere safe.
+
+Hardware configuration changes should be tested cautiously. Do not unplug
+the Gameband while a write is in progress. Readback verification reduces
+risk but cannot guarantee compatibility with every device or firmware.
+
+MACOS STATUS
+------------
+The included icon.icns is an Apple icon resource, but a macOS .app still
+needs to be built on macOS and Gameband HID access tested before macOS can
+be considered supported.
 
 WINDOWS SECURITY
-A locally built unsigned EXE can trigger Windows reputation checks. For public
-distribution, code signing is the proper long-term solution; do not globally
-disable Windows security.
+----------------
+An unsigned Windows executable may trigger a Microsoft Defender SmartScreen
+reputation warning. For public distribution, code signing is the proper
+long-term solution. Do not globally disable Windows security.
 
+PROJECT AND SUPPORT
+-------------------
+Source code and issue reports:
+  https://github.com/JovanyCardenas/PixelFurnace-Revived
 
-STUDIO 1.3 FIXES
-- Restores the complete Advanced Mode layout and controls.
-- Advanced Mode again exposes Open Backup, Save Candidate, Restore Backup,
-  Add Text / Pixel Scroll, Delete Screen, Move Up, Move Down, timing controls,
-  and the diagnostic log.
-- Keeps all Simple Mode behavior and Gameband branding from 1.2.
-- Uses the same Gameband icon for the EXE, application window, and Windows
-  taskbar by combining the embedded ICO, Tk window icon, and a dedicated
-  Windows AppUserModelID.
+PixelFurnace Studio is not the original PixelFurnace application and is not
+affiliated with or endorsed by the original Gameband developers, Mojang,
+Minecraft, or Microsoft. Third-party Gameband branding and artwork are not
+claimed as original PixelFurnace Studio assets.
