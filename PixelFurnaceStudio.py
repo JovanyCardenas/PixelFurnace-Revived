@@ -473,11 +473,11 @@ class App(tk.Tk):
                         if transition else "No transition found")
             if not messagebox.askyesno(
                 "Sync Gameband Date & Time",
-                "Synchronize the Gameband from this computer?\\n\\n"
-                f"Computer time: {shown}\\n"
+                "Synchronize the Gameband from this computer?\n\n"
+                f"Computer time: {shown}\n"
                 f"Current UTC offset: {self._format_utc_offset(current_min)}\n"
                 f"Next offset: {self._format_utc_offset(next_min)}\n"
-                f"Next transition: {trans_text}\\n\\n"
+                f"Next transition: {trans_text}\n\n"
                 "This updates the Gameband timezone/DST header and its RTC. "
                 "Your scrolling message is preserved."
             ): return
@@ -534,8 +534,8 @@ class App(tk.Tk):
             self.logmsg(f"Time/DST synchronized: {shown}; next transition {trans_text}; backup {bp}")
             messagebox.showinfo(
                 "Time synchronized",
-                "Gameband RTC and timezone/DST information were updated.\\n\\n"
-                f"{shown}\\nNext transition: {trans_text}\\n\\n"
+                "Gameband RTC and timezone/DST information were updated.\n\n"
+                f"{shown}\nNext transition: {trans_text}\n\n"
                 "Unplug normally and check the Time and Date screens."
             )
         except Exception as e:
