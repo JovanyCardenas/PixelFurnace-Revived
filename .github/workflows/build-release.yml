@@ -1,0 +1,68 @@
+
+name: Build Windows Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout release source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+
+      - name: Build Windows executable
+        shell: pwsh
+        run: |
+          python -m PyInstaller `
+            --noconfirm `
+            --clean `
+            --onefile `
+            --windowed `
+            --name PixelFurnaceStudio `
+            --icon "PixelFurnaceStudio.ico" `
+            --add-data "background.png;." `
+            --add-data "icon.png;." `
+            --add-data "PixelFurnaceStudio.ico;." `
+            --collect-binaries hid `
+            PixelFurnaceStudio.py
+
+      - name: Prepare release ZIP
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "release-package/gameband_backup"
+          Copy-Item "dist/PixelFurnaceStudio.exe" "release-package/"
+          Copy-Item "README.txt" "release-package/"
+          Set-Content "release-package/gameband_backup/KEEP_BACKUPS_HERE.txt" "Automatic Gameband backups are stored here."
+          Compress-Archive -Path "release-package/*" -DestinationPath "PixelFurnaceStudio-Windows.zip"
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        shell: pwsh
+        run: |
+          gh release upload "$env:RELEASE_TAG" `
+            "dist/PixelFurnaceStudio.exe" `
+            "PixelFurnaceStudio-Windows.zip" `
+            --clobber
