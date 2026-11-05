@@ -1,0 +1,51 @@
+
+name: Hardware Research
+description: Share Gameband protocol findings or compatibility results
+title: "[Hardware]: "
+labels: ["research"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Research Category
+      options:
+        - USB HID Communication
+        - Configuration Memory
+        - LED Display
+        - Clock / Timezone / DST
+        - Firmware
+        - Hardware Compatibility
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: discovery
+    attributes:
+      label: Discovery or Observation
+      description: Describe what you found.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: verification
+    attributes:
+      label: Verification Status
+      options:
+        - Verified on hardware
+        - Experimental
+        - Under investigation
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and Testing
+      description: Include safe, reproducible testing details.
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Related Research
+      description: Link relevant documentation, code, or discussions.
