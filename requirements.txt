@@ -1,2 +1,2 @@
+Pillow>=13.0.0
 hidapi>=0.15.0
-Pillow>=10.0
