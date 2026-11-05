@@ -1,0 +1,46 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Build artifacts
+build/
+dist/
+*.spec
+*.egg-info/
+
+# Windows packaged builds
+PixelFurnace Studio Windows/
+PixelFurnaceStudio.exe
+
+# Gameband backups and configuration dumps
+gameband_backup/
+*.bin
+*.dump
+*.bak
+
+# Local logs
+*.log
+logs/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
