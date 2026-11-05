@@ -420,28 +420,47 @@ class App(tk.Tk):
             if len(d)!=4096: raise ValueError("file must be exactly 4096 bytes")
             self.load_words(words_from_bytes(d),Path(p).name)
         except Exception as e: messagebox.showerror("Open failed",str(e))
+    @staticmethod
+    def _local_offset_minutes(timestamp):
+        """Read the OS local timezone rules at an absolute instant."""
+        offset = dt.datetime.fromtimestamp(timestamp, dt.timezone.utc).astimezone().utcoffset()
+        if offset is None:
+            raise ValueError("Cannot determine local UTC offset")
+        return int(offset.total_seconds() / 60)
+
     def _next_offset_transition(self, now_local):
-        """Find next local UTC-offset transition using the PC's timezone rules."""
-        base=now_local.utcoffset()
-        probe=now_local
-        # Search ahead hourly for up to ~400 days, then binary-refine to a minute.
-        for _ in range(24*400):
-            nxt=probe+dt.timedelta(hours=1)
-            if nxt.utcoffset()!=base:
-                lo,hi=probe,nxt
-                while (hi-lo)>dt.timedelta(minutes=1):
-                    mid=lo+(hi-lo)/2
-                    if mid.utcoffset()==base: lo=mid
-                    else: hi=mid
-                return int(hi.timestamp()), int(base.total_seconds()//60), int(hi.utcoffset().total_seconds()//60)
-            probe=nxt
-        return None,int(base.total_seconds()//60),int(base.total_seconds()//60)
+        """Find next offset change using absolute timestamps, not fixed-offset datetimes."""
+        now_ts = int(now_local.timestamp())
+        current = self._local_offset_minutes(now_ts)
+        probe = now_ts
+        end_ts = now_ts + 400 * 24 * 3600
+        step = 6 * 3600
+        while probe < end_ts:
+            nxt = min(probe + step, end_ts)
+            if self._local_offset_minutes(nxt) != current:
+                lo, hi = probe, nxt
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if self._local_offset_minutes(mid) == current:
+                        lo = mid
+                    else:
+                        hi = mid
+                return hi, current, self._local_offset_minutes(hi)
+            probe = nxt
+        return None, current, current
+
+    @staticmethod
+    def _format_utc_offset(minutes):
+        sign = "+" if minutes >= 0 else "-"
+        hours, mins = divmod(abs(minutes), 60)
+        return f"{sign}{hours}:{mins:02d}"
 
     @staticmethod
     def _enc14_signed_quarter(minutes):
         # Gameband stores signed 14-bit quarter-hour offsets.
-        q=int(minutes//15)
-        return q & 0x3fff
+        if minutes % 15:
+            raise ValueError("UTC offset must be a multiple of 15 minutes")
+        return (minutes // 15) & 0x3fff
 
     def sync_clock(self):
         """Sync RTC and refresh the Gameband timezone/DST transition header."""
@@ -456,8 +475,8 @@ class App(tk.Tk):
                 "Sync Gameband Date & Time",
                 "Synchronize the Gameband from this computer?\\n\\n"
                 f"Computer time: {shown}\\n"
-                f"Current UTC offset: {current_min//60:+d}:{abs(current_min)%60:02d}\\n"
-                f"Next offset: {next_min//60:+d}:{abs(next_min)%60:02d}\\n"
+                f"Current UTC offset: {self._format_utc_offset(current_min)}\n"
+                f"Next offset: {self._format_utc_offset(next_min)}\n"
                 f"Next transition: {trans_text}\\n\\n"
                 "This updates the Gameband timezone/DST header and its RTC. "
                 "Your scrolling message is preserved."
@@ -481,7 +500,12 @@ class App(tk.Tk):
                 if transition:
                     # Timestamp is stored byte-by-byte in words 2..5.
                     for i in range(4): target[2+i]=(transition>>(8*i))&0xff
-                    target[6]=1
+                    # Preserve word 6: other implementations identify it as orientation.
+                else:
+                    # No upcoming offset change: avoid retaining a stale transition.
+                    for i in range(4):
+                        target[2+i] = 0
+                # Word 6 is deliberately left unchanged (possible orientation).
                 # Screen data did not change, so its checksum remains valid.
                 active=12+target[9]
                 padded=((active+31)//32)*32
