@@ -1,0 +1,74 @@
+
+name: Bug Report
+description: Report a problem with PixelFurnace Studio
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug!
+        For security vulnerabilities, please use
+        the private reporting process in SECURITY.md.
+
+  - type: input
+    id: version
+    attributes:
+      label: PixelFurnace Studio Version
+      placeholder: "e.g. v1.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      options:
+        - Windows 11
+        - Windows 10
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: What went wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Connect Gameband
+        2. Open PixelFurnace Studio
+        3. Click...
+        4. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots or Logs
+      description: Remove sensitive information before posting.
+
+  - type: dropdown
+    id: hardware
+    attributes:
+      label: Was Original Gameband Hardware Used?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
