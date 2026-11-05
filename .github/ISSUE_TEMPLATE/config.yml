@@ -1,0 +1,11 @@
+
+blank_issues_enabled: true
+
+contact_links:
+  - name: Community Discussions
+    url: https://github.com/JovanyCardenas/PixelFurnace-Revived/discussions
+    about: Ask questions and discuss the Gameband revival project.
+
+  - name: Security Vulnerabilities
+    url: https://github.com/JovanyCardenas/PixelFurnace-Revived/security/policy
+    about: Read the security policy before reporting vulnerabilities.
